@@ -10,4 +10,8 @@ routes.get("/devs", DevController.index);
 
 routes.get("/search", SearchController.index);
 
+routes.delete("/devs/:id", DevController.destroy);
+
+routes.put("/devs/:id", DevController.update);
+
 module.exports = routes;

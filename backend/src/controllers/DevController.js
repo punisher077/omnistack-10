@@ -15,27 +15,32 @@ module.exports = {
 
         if (!dev) {
             const techsArray = stringTechsToArray(techs);
+            try {
+                const git_response = await axios.get(
+                    `https://api.github.com/users/${github_username}`
+                );
+                const { avatar_url, name = login, bio } = git_response.data;
 
-            const git_response = await axios.get(
-                `https://api.github.com/users/${github_username}`
-            );
-
-            const { avatar_url, name = login, bio } = git_response.data;
-
-            dev = await Dev.create({
-                name,
-                avatar_url,
-                bio,
-                github_username,
-                techs: techsArray,
-                location
-            });
+                dev = await Dev.create({
+                    name,
+                    avatar_url,
+                    bio,
+                    github_username,
+                    techs: techsArray,
+                    location
+                });
+                return res.json(dev);
+            } catch (err) {
+                return res
+                    .sendStatus(err.response.status)
+                    .send("Erro ao encontrar usuario do GitHub");
+            }
         }
-        return res.json(dev);
     },
 
     async index(req, res) {
-        const devs = await Dev.find();
+        const { page = 1, limit = 4 } = req.query;
+        const devs = await Dev.paginate({}, { page, limit: parseInt(limit) });
         return res.json(devs);
     },
 

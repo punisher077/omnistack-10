@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     },
     searchForm: {
         position: "absolute",
-        bottom: 20,
+        top: 20,
         left: 20,
         right: 20,
         zIndex: 5,
@@ -122,5 +122,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         marginLeft: 15,
+        borderRadius: 25
     }
 });

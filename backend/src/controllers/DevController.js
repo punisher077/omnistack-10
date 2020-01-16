@@ -36,11 +36,15 @@ module.exports = {
                     .send("Erro ao encontrar usuario do GitHub");
             }
         }
+        else {
+            return res.sendStatus(400);
+        }
     },
 
     async index(req, res) {
-        const { page = 1, limit = 4 } = req.query;
-        const devs = await Dev.paginate({}, { page, limit: parseInt(limit) });
+        //const { page = 1, limit = 4 } = req.query;
+        //const devs = await Dev.paginate({}, { page, limit: parseInt(limit) });
+        const devs = await Dev.find();
         return res.json(devs);
     },
 

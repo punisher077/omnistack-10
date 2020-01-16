@@ -4,9 +4,11 @@ import "./global.css";
 import "./App.css";
 import "./Sidebar.css"
 import "./Main.css"
-
+import api from './services/api';
 
 function App() {
+
+    const [devs, setDevs] = useState([]);
     const [latitude, setLatitude] = useState('');
     const [longitude, setLongitude] = useState('');
 
@@ -20,7 +22,7 @@ function App() {
             setLatitude(latitude);
             setLongitude(longitude);
         }, (err) => {
-            console.log(err);
+            console.error(err);
         }, {
             timeout: 30000
         });
@@ -30,8 +32,25 @@ function App() {
         };
     }, []);
 
+    useEffect(() => {
+        async function loadDevs() {
+            const response = await api.get('/devs');
+            setDevs(response.data);
+        }
+        loadDevs();
+    }, [])
+
     async function handleAddDev(event) {
         event.preventDefault();
+        const response = await api.post('/devs', {
+            github_username,
+            techs,
+            latitude,
+            longitude
+        });
+
+        setGithub_username('');
+        setTechs('');
 
     }
 
@@ -85,40 +104,19 @@ function App() {
             </aside>
             <main>
                 <ul>
-                    <li className="dev-item">
-                        <header>
-                            <img src="https://avatars0.githubusercontent.com/u/29128672?s=460&v=4" alt="Arthur Mauricio" />
-                            <div className="user-info">
-                                <strong>Arthur Mauricio</strong>
-                                <span>A,B,C</span>
-                            </div>
-                        </header>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas et diam dignissim, dignissim diam molestie, porta orci. In hac habitasse platea dictumst. Phasellus egestas laoreet egestas. </p>
-                        <a href="https:/github.com/punisher077"> Acessar perfil no Github</a>
-                    </li>
-
-                    <li className="dev-item">
-                        <header>
-                            <img src="https://avatars0.githubusercontent.com/u/29128672?s=460&v=4" alt="Arthur Mauricio" />
-                            <div className="user-info">
-                                <strong>Arthur Mauricio</strong>
-                                <span>A,B,C</span>
-                            </div>
-                        </header>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas et diam dignissim, dignissim diam molestie, porta orci. In hac habitasse platea dictumst. Phasellus egestas laoreet egestas. </p>
-                        <a href="https:/github.com/punisher077"> Acessar perfil no Github</a>
-                    </li>
-                    <li className="dev-item">
-                        <header>
-                            <img src="https://avatars0.githubusercontent.com/u/29128672?s=460&v=4" alt="Arthur Mauricio" />
-                            <div className="user-info">
-                                <strong>Arthur Mauricio</strong>
-                                <span>A,B,C</span>
-                            </div>
-                        </header>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas et diam dignissim, dignissim diam molestie, porta orci. In hac habitasse platea dictumst. Phasellus egestas laoreet egestas. </p>
-                        <a href="https:/github.com/punisher077"> Acessar perfil no Github</a>
-                    </li>
+                    {devs.map((dev, index) => (
+                        <li className="dev-item" key={dev._id}>
+                            <header>
+                                <img src={dev.avatar_url} alt={dev.name} />
+                                <div className="user-info">
+                                    <strong>{dev.name}</strong>
+                                    <span>{dev.techs.join(', ')}</span>
+                                </div>
+                            </header>
+                            <p>{dev.bio}</p>
+                            <a href={`https://github.com/${dev.github_username}`}> Acessar perfil no Github</a>
+                        </li>
+                    ))}
                 </ul>
             </main>
         </div>

@@ -1,19 +1,21 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const routes = require("./routes");
-
+const cors = require("cors");
 const app = express();
-app.use(express.json());
+
 app.listen(3030);
 
-mongoose.connect(
-	"mongodb+srv://omnistack:omnistack@cluster0-w4dsb.mongodb.net/dev_radar?retryWrites=true&w=majority",
-	{
-		useNewUrlParser: true,
-		useUnifiedTopology: true
-	}
-);
 
+mongoose.connect(
+    "mongodb+srv://omnistack:omnistack@cluster0-w4dsb.mongodb.net/dev_radar?retryWrites=true&w=majority",
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    }
+);
+app.use(cors());
+app.use(express.json());
 app.use(routes);
 
 // MÉTODOS HTTP
